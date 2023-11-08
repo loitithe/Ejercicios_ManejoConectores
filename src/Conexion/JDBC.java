@@ -18,7 +18,7 @@ public class JDBC {
             String url = String.format("jdbc:mysql://%s:3306/%s", server, bd);
             this.connection = DriverManager.getConnection(url, user, password);
             if (this.connection != null) {
-                System.out.println("Conectado a " + bd + "en " + server);
+                System.out.println("Conectado a " + bd + " en " + server);
                 setMetadatos(connection.getMetaData());
 
             } else
@@ -74,12 +74,15 @@ public class JDBC {
         return connection;
     }
 
-    public DatabaseMetaData getMetadatos() {
-        return metadatos;
+    public DatabaseMetaData getMetadatos() throws SQLException {
+        return this.connection.getMetaData();
     }
 
     public void setMetadatos(DatabaseMetaData metadatos) {
         this.metadatos = metadatos;
     }
 
+    public void getNumCols() {
+
+    }
 }
