@@ -16,6 +16,7 @@ public class Ejercicios {
     private static JDBC jdbc = new JDBC();
     private static ResultSet rs;
     private static Connection conexion;
+    private static Boolean fkey;
 
     /**
      * 
@@ -80,20 +81,36 @@ public class Ejercicios {
 
     private static void transaccionEmpleado() {
         int numFilasAfectadas = 0;
-        String[] datos = new String[] { "3,'PEDRO',1", "2,'LUCIA',1", "1,'DANIEL',1" };
-        String query = String.format("INSERT INTO (NSS,Nombre,Numdept) EMPLEADO VALUES(%s,%s,%d)");
-        System.out.println();
-
+        String[] datos = new String[] { "13,PEDRO,1", "2,LUCIA,1", "1,DANIEL,1" };
+        String query = "INSERT INTO EMPLEADO(NSS,Nombre,Numdept) VALUES (?,?,?)";
         try {
             conexion.setAutoCommit(false);
             st = conexion.createStatement();
             for (int i = 0; i < datos.length; i++) {
-                numFilasAfectadas += st.executeUpdate(query + datos[i]);
+                ps = conexion.prepareStatement(query);
+                String[] dato = datos[i].trim().split(",");
+                System.out.println(dato[0] + dato[1] + dato[2]);
+                int nnss = Integer.parseInt(dato[0]);
+                String nombre = dato[1];
+                int numDept = Integer.parseInt(dato[2]);
+                ps.setInt(1, nnss);
+                ps.setString(2, nombre);
+                ps.setInt(3, numDept);
+                numFilasAfectadas += ps.executeUpdate();
                 conexion.commit();
             }
             System.out.println("filas afectadas " + numFilasAfectadas);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
+        } finally {
+            try {
+                conexion.rollback();
+                conexion.close();
+                sc.close();
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
     }
 
@@ -180,17 +197,43 @@ public class Ejercicios {
     public static void borradoEmpleados() {
         System.out.println("Introduce un numero para realizar el borrado");
         String query = "DELETE FROM EMPLEADO WHERE NSS = ?";
-        int numero = sc.nextInt();
+        int numero = -1;
+        while (numero < 0) {
+            numero = sc.nextInt();
+
+            try {
+                if (ps == null) {
+                    ps = conexion.prepareStatement(query);
+                    switchFKey();
+                    ps.setInt(1, numero);
+                    int numFilasAfectadas = ps.executeUpdate();
+                    System.out.println("numero de filas afectadas : " + numFilasAfectadas);
+                    switchFKey();
+                    ;
+                }
+
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+
+    }
+
+    public static void switchFKey() {
         try {
-            if (ps == null) {
-                ps = conexion.prepareStatement(query);
-                ps.setInt(1, numero);
-                int numFilasAfectadas = ps.executeUpdate();
-                System.out.println("numero de filas afectadas : " + numFilasAfectadas);
+            Statement statement = conexion.createStatement();
+            if (fkey) {
+                statement.execute("SET FOREIGN_KEY_CHECKS=0");
+                fkey = false;
+            } else {
+                statement.execute("SET FOREIGN_KEY_CHECKS=1");
+                fkey = true;
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }
