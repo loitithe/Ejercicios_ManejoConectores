@@ -7,12 +7,17 @@ public class AppStudents {
     private Scanner sc;
     private int option;
     private ManageStudents manageStudents;
+    private Conexion conexion;
 
     AppStudents() {
         sc = new Scanner(System.in);
         manageStudents = new ManageStudents();
+        conexion = new Conexion();
+        manageStudents.openConnection("school", "localhost", "root", "abc123");
+
         option = menuOpciones();
         switch (option) {
+
             case 1:
                 matriculaEstudiante();
                 break;

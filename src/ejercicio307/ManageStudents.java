@@ -74,6 +74,7 @@ public class ManageStudents {
         try {
             System.out.println("Modificando usuario... ");
             ps = connection.prepareStatement(query);
+            ps.setString(1, id);
             resultSet = ps.executeQuery();
             int columns = resultSet.getMetaData().getColumnCount();
             while (resultSet.next()) {
