@@ -21,10 +21,6 @@ public class ManageStudents {
     private String query;
     private Scanner sc;
 
-    ArrayList<Student> getStudentsList() {
-        return students;
-    }
-
     void openConnection(String bd, String server, String user, String password) {
         try {
             String url = String.format("jdbc:mysql://%s:3306/%s", server, bd);
@@ -68,11 +64,32 @@ public class ManageStudents {
 
     }
 
+    ArrayList<Student> getStudents() {
+        students  = new ArrayList<Student>();
+        try {
+            query = "SELECT * FROM STUDENT;";
+            ps = connection.prepareStatement(query);
+            resultSet = ps.executeQuery();
+            int columns = resultSet.getMetaData().getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columns; i++) {
+                    System.out.printf("%s\t", resultSet.getString(i));
+                    student = new Student(resultSet.getString(i), resultSet.getString(i), resultSet.getString(i),
+                            resultSet.getInt(i));
+                    students.add(student);
+                }
+                System.out.println();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
     Student getStudent(String id) {
 
         query = "SELECT * FROM STUDENT WHERE ID=?";
         try {
-            System.out.println("Modificando usuario... ");
             ps = connection.prepareStatement(query);
             ps.setString(1, id);
             resultSet = ps.executeQuery();
@@ -110,6 +127,7 @@ public class ManageStudents {
     }
 
     boolean modifyStudent() {
+        sc = new Scanner(System.in);
         System.out.println("Introduce id del estudiante a modificar :");
         String id = sc.nextLine();
         student = createStudent();
@@ -126,6 +144,7 @@ public class ManageStudents {
             numFilasAfectadas = ps.executeUpdate();
             System.out.println("Filas afectadas = " + numFilasAfectadas);
             return true;
+
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

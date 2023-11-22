@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "ejercicio309.copy.Main",
+            "projectName": "Ejercicios_ManejoConectores_7e1de267"
+        },
+        {
+            "type": "java",
             "name": "main",
             "request": "launch",
             "mainClass": "ejercicio307.main",

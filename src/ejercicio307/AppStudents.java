@@ -14,31 +14,33 @@ public class AppStudents {
         manageStudents = new ManageStudents();
         conexion = new Conexion();
         manageStudents.openConnection("school", "localhost", "root", "abc123");
+        do {
+            option = menuOpciones();
+            switch (option) {
 
-        option = menuOpciones();
-        switch (option) {
+                case 1:
+                    matriculaEstudiante();
+                    break;
+                case 2:
+                    bajaEstudiante();
+                    break;
+                case 3:
+                    updateEstudiante();
+                    break;
+                case 4:
+                    verEstudiante();
+                    break;
+                case 5:
+                    verEstudiantes();
+                    break;
+                case 0:
+                    salir();
+                    break;
+                default:
+                    break;
+            }
 
-            case 1:
-                matriculaEstudiante();
-                break;
-            case 2:
-                bajaEstudiante();
-                break;
-            case 3:
-                updateEstudiante();
-                break;
-            case 4:
-                verEstudiante();
-                break;
-            case 5:
-                verEstudiantes();
-                break;
-            case 0:
-                salir();
-                break;
-            default:
-                break;
-        }
+        } while (option != 0);
 
     }
 
@@ -88,6 +90,7 @@ public class AppStudents {
     }
 
     void verEstudiantes() {
+        manageStudents.getStudents();
     }
 
     void salir() {

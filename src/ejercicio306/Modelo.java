@@ -52,6 +52,8 @@ public class Modelo {
             e.printStackTrace();
         } catch (NumberFormatException e) {
             e.printStackTrace();
+        }finally{
+            
         }
         return linea;
     }
