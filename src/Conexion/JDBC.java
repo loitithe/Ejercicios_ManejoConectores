@@ -8,12 +8,33 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 public class JDBC {
-    private Connection connection;
-    private DatabaseMetaData metadatos;
-    private ResultSet rst, rsp;
-    private ResultSetMetaData resultSetMetaData;
+    private static Connection connection;
+    private static String bd, server, user, password;
 
-    public void openConexion(String bd, String server, String user, String password) {
+    String url = String.format("jdbc:mysql://%s:3306/%s", server, bd);
+    private DatabaseMetaData metadatos;
+    private ResultSet rsp;
+
+    private JDBC() {
+
+    }
+
+    private JDBC(String bd, String server, String user, String password) {
+
+        try {
+            JDBC.connection = DriverManager.getConnection(url, user, password);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Connection getInstance() {
+        if (JDBC.connection == null)
+            new JDBC(bd, server, user, password);
+        return JDBC.connection;
+    }
+
+    public void openConexion() {
         try {
             String url = String.format("jdbc:mysql://%s:3306/%s", server, bd);
             this.connection = DriverManager.getConnection(url, user, password);
